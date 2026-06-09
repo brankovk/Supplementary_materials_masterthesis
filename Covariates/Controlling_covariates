@@ -1,0 +1,49 @@
+% To control for the covariates (age, gender, in-scanner motion), a partial
+% correlation will be conducted.
+%%
+Hypothesis = strings(7,1);
+r = nan(7,1);
+p = nan(7,1);
+Covariates = strings(7,1);
+
+%% H1
+Hypothesis(1) = "H1";
+[r(1), p(1)] = partialcorr(T_nct.E0_2, T_nct.PSMT, [T_nct.Age_num T_nct.Gender_num]);
+Covariates(1) = "Age + Gender";
+
+%% H2
+Hypothesis(2) = "H2";
+[r(2), p(2)] = partialcorr(T_nct.E2_0, T_nct.PSMT, [T_nct.Age_num T_nct.Gender_num]);
+Covariates(2) = "Age + Gender";
+
+%% H3
+Hypothesis(3) = "H3";
+[r(3), p(3)] = partialcorr(T_nct.S2, T_nct.PSMT, [T_nct.Age_num T_nct.Gender_num]);
+Covariates(3) = "Age + Gender";
+
+%% H4 (unique effect)
+Hypothesis(4) = "H4";
+[r(4), p(4)] = partialcorr(T_nct.S0, T_nct.PSMT, [T_nct.S2 T_nct.Age_num T_nct.Gender_num]);
+Covariates(4) = "S2 + Age + Gender";
+
+%% H5
+Hypothesis(5) = "H5";
+[r(5), p(5)] = partialcorr(T_nct.dE, T_nct.PSMT, [T_nct.Age_num T_nct.Gender_num]);
+Covariates(5) = "Age + Gender";
+
+%% H6
+Hypothesis(6) = "H6";
+[r(6), p(6)] = partialcorr(T_nct.dS, T_nct.PSMT, [T_nct.Age_num T_nct.Gender_num]);
+Covariates(6) = "Age + Gender";
+
+%% H7 (relationship between brain metrics)
+Hypothesis(7) = "H7";
+[r(7), p(7)] = partialcorr(T_nct.dE, T_nct.dS, [T_nct.Age_num T_nct.Gender_num]);
+Covariates(7) = "Age + Gender";
+
+%% Convert to table + save
+Results_covar = table(Hypothesis, r, p, Covariates);
+
+writetable(Results_covar, "NCT_Hypotheses_Results_covar.csv");
+
+save("NCT_Hypotheses_Results_covar.mat", "Results_covar");
