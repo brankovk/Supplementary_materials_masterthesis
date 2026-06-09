@@ -1,0 +1,79 @@
+function [data_reord]=region_reordering_test(goal, parc, inp)
+% function reorderes HCP data according to order of regions as in CATO DWI 
+% output; Alina Podschun and Sebastian Markett (2022)
+%
+% needs variables:
+%   - goal -> this has the regions as named in CATO DWI output/structural
+%   connectome
+%   - parc -> ciftified HCP parcellation
+%   - inp -> match-ordered input (cope file) that needs to be reordered to goal-order
+%
+% output:
+%   - vector containing CATO-ordered region label and corresponding value
+%       of functional data of cope file of interest
+
+%% create list of labels
+
+% test lists all region names that contain the ctx-lh prefix (instead of
+% rh)
+test = goal(contains(goal,'ctx-lh')==1);
+
+% check which part is the individual names; this is about finding out where
+% the prefix ends, in this case through trial we know its 8; change number
+% if needed
+test{1}(8:numel(test{1}));
+
+% make boulean list lh which contains 1 for every left hemisphere region
+lh = contains(goal,'ctx-lh');
+
+% add L and R to pure label name extractions; result is vector "label" that
+% contains labels for all 219 regions -> names are freesurfer style but
+% order is CATO style still
+%%
+for i=1:length(goal)
+    if lh(i) == 1
+        label{i,1} = ['L' goal{i}(8:numel(goal{i}))];
+    else
+        label{i,1} = ['R' goal{i}(8:numel(goal{i}))];
+    end
+    label{i,2} = i;
+end
+
+%% build matching HCP ordered list and inp
+
+% result here is vector "match" with freesurfer-style names in
+% freesurfer-style order
+inmed = parc(:,3);
+for k = 1:221
+    match(k,1) = inmed(k);
+end
+
+
+%%
+% from match, drop unknown area and corpus callosum
+match=match(~ismember(match(:,1),'???'),:);
+match=match(~ismember(match(:,1),'Lcorpuscallosum'),:);
+match=match(~ismember(match(:,1),'Rcorpuscallosum'),:);
+
+
+%%
+% detelete corpus callosum from functional input
+inp(4,:)=[];
+inp(115,:)=[];
+
+%%  reorder functional data in a reordered way (matching CATO DWI output)
+data_reord = zeros(219,1);
+for i=1:219
+    inter=label{i};
+    find = strcmp(inter,match);
+    for k=1:219
+        if find(k)==1
+            data_reord(i)=inp{k};
+        else
+            continue
+        end
+    end
+end
+
+
+
