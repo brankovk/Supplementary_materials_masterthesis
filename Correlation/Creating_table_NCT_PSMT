@@ -1,1 +1,89 @@
+% To prepare the data we have from the NCT-analysis and from each subject's
+% score on the Picture Sequence Memory Test (PSMT) for the correlation analysis, we need to create a table
+% where all the results from the NCT-analysis are going to be stored plus
+% subject's ID and the results on the PSMT. In this way it is more
+% organized to have all the needed information in one document. Then we cn
+% use only this table in the script for the correlation and the regression.
+%% First we need to load the subject IDs
+id_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Task Data\WM brain states\Vorbereitung_extraction\HCP_1200_ids.txt";
 
+subjects = string(readlines(id_file));
+subjects = strtrim(subjects);
+subjects(subjects == "") = [];
+
+%% Then we need to load the energy files ( the results from the NCT-analysis)
+energy_dir = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Python\Global energies\T1\Rho1";
+
+%% After that we need to load the results of the age-adjusted Picture Sequence Memory Test (PSMT)
+% (the table we created with only two columns -> one with subjects ID and
+% second column with each subject's score on the PSMT)
+psmt_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\Correlation\HCP_PicSeq_all_filtered.csv";
+psmt_table = readtable(psmt_file);
+psmt_table.Subject = string(psmt_table.Subject);
+psmt_table.Subject = strtrim(psmt_table.Subject);
+% assume column names:
+% Subject | PSM
+% adapt if needed
+
+%% We need to prellocate to store the vectots later
+n = length(subjects);
+
+Subject = strings(n,1);
+E0_2 = nan(n,1);
+E2_0 = nan(n,1);
+S0   = nan(n,1);
+S2   = nan(n,1);
+dE   = nan(n,1);
+dS   = nan(n,1);
+PSMT  = nan(n,1);
+
+%% Loop over subjects
+for i = 1:n
+
+    subj = subjects{i};
+    Subject(i) = subj;
+
+    try
+        % Load energy file
+        file = fullfile(energy_dir, subj + "_alltransitions_integrated.mat");
+
+        if ~isfile(file)
+            fprintf('[SKIP] missing energy file: %s\n', subj);
+            continue
+        end
+
+        data = load(file);
+        E = data.global_energies;
+        
+        % Extract values
+        E0_2(i) = E(1,2);
+        E2_0(i) = E(2,1);
+        S0(i)   = E(1,1);
+        S2(i)   = E(2,2);
+
+        dE(i) = E0_2(i) - E2_0(i);
+        dS(i) = S2(i) - S0(i);
+
+        % Macth PSM score
+        idx = strcmp(psmt_table.Subject, subj);
+
+        if any(idx)
+            PSMT(i) = psmt_table.PicSeq_AgeAdj(idx);
+        else
+            fprintf('[WARN] no PSM for %s\n', subj);
+        end
+
+    catch ME
+        fprintf('[ERROR] subject %s: %s\n', subj, ME.message);
+    end
+end
+
+%% Build final table
+T_nct = table(Subject, E0_2, E2_0, S0, S2, dE, dS, PSMT);
+
+%% Save dataset
+save("C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\Correlation\NCT_PSMT_all_dataset.mat", 'T_nct');
+
+writetable(T_nct, "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\Correlation\NCT_PSMT_all_dataset.csv");
+
+disp('DONE: dataset created');
