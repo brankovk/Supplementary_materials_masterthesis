@@ -1,0 +1,46 @@
+%To conduct the correlation analysis between the NCT-Analysis and the 
+% Picture Sequence Memory Test (episodic memory), we need to create a 
+% table with only two columns - one with the subjects' Id and one
+% with the PSMT score for each subject. So for this purpose
+% we need to extract these two columns from the main excel-table from
+% the HCP site
+%% Add the table with the data in MATLAB and open HCP_data
+id_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Task Data\WM brain states\Vorbereitung_extraction\HCP_1200_ids.txt";
+behavioral_data_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Sample\HCP_S1200_Endsample.xlsx";
+
+assert(isfile(behavioral_data_file), "Excel file not found");
+assert(isfile(id_file), "ID file not found");
+
+T = readtable(behavioral_data_file, 'TextType','string', 'VariableNamingRule','preserve', 'ReadVariableNames', true);
+head(T)
+
+% Display all variable names - I need to write them correct later
+disp(T.Properties.VariableNames);
+
+%% Load subjects IDs
+subjects = string(readlines(id_file));
+subjects = strtrim(subjects);
+subjects(subjects == "") = [];
+
+%% Standardize variables
+T.Subject = compose("%.0f", T.Subject);
+T.Subject = strtrim(T.Subject);
+
+missing = subjects(~ismember(subjects, T.Subject));
+
+disp("Missing subjects:")
+disp(missing)
+
+%% Filter using .txt subjects
+idx = ismember(T.Subject, subjects);
+T_filtered = T(idx, :);
+
+%% Keep only what is needed
+FinalTable = table;
+FinalTable.Subject = T_filtered.Subject;
+FinalTable.PicSeq_AgeAdj = T_filtered.PicSeq_AgeAdj;
+
+%% Display and save
+disp(FinalTable)
+
+writetable(FinalTable, "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\Correlation\HCP_PicSeq_all_filtered.csv");
