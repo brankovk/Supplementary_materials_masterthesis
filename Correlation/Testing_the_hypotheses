@@ -1,0 +1,46 @@
+%% To see if participants who require more energy to switch between the A -> B and B -> A
+% working memory brain states show poorer performance on their performance
+% on behavioral episodic memory tasks, a correlation analysis need to be done
+% between:
+% Energy cost values for each participant (from NCT analysis) and
+% Picture Sequence test scores for the same participants
+
+%% Load the data file
+%load('NCT_PSMT_all_dataset.mat') % Sometimes need to be done directly by clicking on the name in the folder "Correlation"
+T = T_nct;
+
+%% Do Pearson’s Correlation (Linear)
+% with Rows and complete we do a NaN safety
+[r1, p1] = corr(T.E0_2, T.PSMT, 'Type', 'Pearson', 'Rows', 'complete'); % H1
+fprintf('H1 (E0->2 vs PSMT): r1 = %.3f, p1 = %.3f\n', r1, p1);
+
+[r2, p2] = corr(T.E2_0, T.PSMT, 'Type','Pearson', 'Rows', 'complete'); % H2
+fprintf('H2 (E2->0 vs PSMT): r2 = %.3f, p2 = %.3f\n', r2, p2);
+
+[r3, p3] = corr(T.S2, T.PSMT, 'Type','Pearson', 'Rows','complete'); % H3
+fprintf('H3 (S2 vs PSMT): r3 = %.3f, p3 = %.3f\n', r3, p3);
+
+[r4, p4] = corr(T.dE, T.PSMT, 'Type','Pearson', 'Rows','complete'); % H5
+fprintf('H5 (ΔE vs PSMT): r4 = %.3f, p4 = %.3f\n', r4, p4);
+
+[r5, p5] = corr(T.dS, T.PSMT, 'Type','Pearson','Rows','complete'); % H6
+fprintf('H6 (ΔS vs PSMT): r5 = %.3f, p5 = %.3f\n', r5, p5);
+
+[r6, p6] = corr(T.dS, T.dE, 'Type','Pearson', 'Rows','complete'); % H7 (coherence check)
+fprintf('H7 (ΔS vs ΔE): r6 = %.3f, p6 = %.3f\n', r6, p6);
+
+%% Hypothesys 4 regression, not correlation (conditional effect)
+mdl = fitlm(T, 'PSMT ~ S0 + S2');
+disp(mdl)
+
+%% Clean thesis-style output
+%Instead of many variables, organize results:
+results = table;
+
+results.Test = ["H1"; "H2"; "H3"; "H5"; "H6"; "H7"];
+results.r = [r1; r2; r3; r4; r5; r6];
+results.p = [p1; p2; p3; p4; p5; p6];
+
+disp(results)
+
+writetable(results, "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\Correlation\correlation_results_all.csv", 'WriteRowNames',false);
