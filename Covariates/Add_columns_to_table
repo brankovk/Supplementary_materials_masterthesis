@@ -1,0 +1,101 @@
+% To control for the covariates it is easier to use the same table that
+% was created for the correaltion, namely the one with all the results from
+% the NCT-analysis and the PSMT scores. For this purpose the column with
+% the "Gender" was extracted from the main table and after that added in
+% the table with the NCT results + PSMT scores. Then we need to convert the
+% gender from "M" and "F" to M=0, F=1. 
+% After that we do the same with the column "Age", but here after adding
+% the column in the main NCT results + PSMT score table, it is needed to
+% extract midpoint of the age gab, because the are written like 25-30,
+% 30-35, etc.
+%% Load gender file
+gender_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\HCP_Gender_all_filtered.csv";
+
+gender_table = readtable(gender_file);
+
+gender_table.Subject = string(gender_table.Subject);
+gender_table.Subject = strtrim(gender_table.Subject);
+
+gender_table.Gender = string(gender_table.Gender);
+
+%% make sure that the main table Subject column is clean
+T_nct.Subject = string(T_nct.Subject);
+T_nct.Subject = strtrim(T_nct.Subject);
+
+%% Merge tables
+T_nct = outerjoin(T_nct, gender_table, ...
+    'Keys', 'Subject', ...
+    'MergeKeys', true);
+
+%% create numeric version
+% explicit mapping M = 0, F = 1
+T_nct.Gender_num = nan(height(T_nct),1);
+
+T_nct.Gender_num(strcmp(T_nct.Gender, "M")) = 0;
+T_nct.Gender_num(strcmp(T_nct.Gender, "F")) = 1;
+
+%% remove original column
+T_nct.Gender = [];
+
+%% Load Age file
+age_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\HCP_Age_all_filtered.csv";
+
+age_table = readtable(age_file);
+
+age_table.Subject = string(age_table.Subject);
+age_table.Subject = strtrim(age_table.Subject);
+
+age_table.Age = string(age_table.Age);
+
+%% make sure that the main table Subject column is clean
+T_nct.Subject = string(T_nct.Subject);
+T_nct.Subject = strtrim(T_nct.Subject);
+
+%% Merge tables
+T_nct = outerjoin(T_nct, age_table, ...
+    'Keys', 'Subject', ...
+    'MergeKeys', true);
+
+%% extract midpoint
+age_str = string(T_nct.Age);   % e.g., "22-25"
+
+%% split and convert
+n = length(age_str);
+Age_mid = nan(n,1);
+
+for i = 1:n
+    try
+        s = strtrim(age_str(i));
+
+        % Case 1: range like "20-25"
+        if contains(s, "-")
+            parts = split(s, "-");
+            low = str2double(parts(1));
+            high = str2double(parts(2));
+            Age_mid(i) = (low + high)/2;
+
+        % Case 2: "36+" or "40+"
+        elseif contains(s, "+")
+            num = erase(s, "+");
+            Age_mid(i) = str2double(num) + 2.5;  
+            % (approx midpoint assumption of open interval)
+
+        % Case 3: single number
+        elseif ~isnan(str2double(s))
+            Age_mid(i) = str2double(s);
+
+        % Case 4: missing / weird
+        else
+            Age_mid(i) = NaN;
+        end
+
+    catch
+        Age_mid(i) = NaN;
+    end
+end
+
+%% add to table
+T_nct.Age_num = Age_mid;
+
+%% remove original column
+T_nct.Age = [];
