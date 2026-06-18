@@ -1,4 +1,6 @@
-% --- AFTER both cope9 and cope10 are processed --- 
+%% AFTER both cope9 and cope10 are reordered, the xlsx files with the 
+% cope 9 and cope 10 for each subject are created
+%% Defining where the files can be found
 output_base = char("C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\States prepared"); 
 id_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Task Data\WM brain states\Vorbereitung_extraction\HCP_5ids_test.txt"; 
 
@@ -9,14 +11,14 @@ subj_list = subj_list(~cellfun('isempty', subj_list));
 for i = 1:length(subj_list) 
     subj_id = char(subj_list{i}); 
     disp(['Processing subject: ' subj_id]) 
-    try 
+try 
 % Load saved files for this subject 
     base = fullfile(output_base, subj_id, 'MNINonLinear', 'Results', 'tfMRI_WM', 'Bearbeitet'); 
     
     file9 = fullfile(base, [subj_id '_cope9_reordered.mat']); 
     file10 = fullfile(base, [subj_id '_cope10_reordered.mat']); 
 
-    if ~isfile(file9) || ~isfile(file10) 
+if ~isfile(file9) || ~isfile(file10) 
     warning('Missing cope files for subject %s', subj_id); 
     continue 
 end 
