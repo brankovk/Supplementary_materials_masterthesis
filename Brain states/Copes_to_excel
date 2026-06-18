@@ -1,0 +1,56 @@
+% --- AFTER both cope9 and cope10 are processed --- 
+output_base = char("C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\States prepared"); 
+id_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Task Data\WM brain states\Vorbereitung_extraction\HCP_5ids_test.txt"; 
+
+subj_list = strsplit(strtrim(fileread(id_file))); 
+subj_list = strtrim(subj_list); 
+subj_list = subj_list(~cellfun('isempty', subj_list)); 
+
+for i = 1:length(subj_list) 
+    subj_id = char(subj_list{i}); 
+    disp(['Processing subject: ' subj_id]) 
+    try 
+% Load saved files for this subject 
+    base = fullfile(output_base, subj_id, 'MNINonLinear', 'Results', 'tfMRI_WM', 'Bearbeitet'); 
+    
+    file9 = fullfile(base, [subj_id '_cope9_reordered.mat']); 
+    file10 = fullfile(base, [subj_id '_cope10_reordered.mat']); 
+
+    if ~isfile(file9) || ~isfile(file10) 
+    warning('Missing cope files for subject %s', subj_id); 
+    continue 
+end 
+
+data9 = load(file9); 
+data10 = load(file10);
+
+%% Extract data dynamically 
+fn9 = fieldnames(data9); 
+fn10 = fieldnames(data10); 
+
+state1 = data9.(fn9{1})(:); 
+state2 = data10.(fn10{1})(:); 
+
+%% Check size consistency 
+if length(state1) ~= length(state2) 
+   warning('Size mismatch for subject %s', subj_id); 
+   continue; 
+ end 
+
+%% Create ROI labels (1-219) 
+labels = (1:length(state1))'; 
+
+%% Create table 
+T = table(labels, state1, state2, 'VariableNames', {'ROI', 'cope9', 'cope10'}); 
+
+%% Save Excel per subject 
+excel_file = fullfile(output_base, subj_id, [subj_id '_states.xlsx']); 
+
+writetable(T, excel_file); 
+
+disp(['Saved: ' excel_file]) 
+
+catch ME 
+warning('Excel export failed for %s: %s', subj_id, ME.message); 
+end 
+end
