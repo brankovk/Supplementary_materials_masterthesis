@@ -1,0 +1,67 @@
+function plot_partialcorr(X,Y,covars,xlab,ylab,outfile)
+
+% Remove missing values exactly as partialcorr does
+idx = all(~isnan([X Y covars]),2);
+
+X = X(idx);
+Y = Y(idx);
+C = covars(idx,:);
+
+% Residualize X and Y
+mdl_x = fitlm(C,X);
+mdl_y = fitlm(C,Y);
+
+x_adj = mdl_x.Residuals.Raw;
+y_adj = mdl_y.Residuals.Raw;
+
+% Partial correlation
+[r,p] = partialcorr(X,Y,C);
+
+% Figure
+figure('Color','w');
+
+scatter(x_adj,y_adj,...
+    60,...
+    'filled',...
+    'MarkerFaceAlpha',0.7,...
+    'MarkerFaceColor',[0 114 178]/255);
+
+hold on
+
+% Regression line
+mdl = fitlm(x_adj,y_adj);
+
+xfit = linspace(min(x_adj),max(x_adj),100)';
+[yfit,yCI] = predict(mdl,xfit);
+
+fill([xfit;flipud(xfit)],...
+     [yCI(:,1);flipud(yCI(:,2))],...
+     [0.85 0.85 0.85],...
+     'EdgeColor','none',...
+     'FaceAlpha',0.4);
+
+plot(xfit,yfit,...
+     'k',...
+     'LineWidth',2);
+
+% Statistics
+text(0.05,0.95,...
+     sprintf('partial r = %.2f\np = %.3f',r,p),...
+     'Units','normalized',...
+     'FontSize',12,...
+     'VerticalAlignment','top');
+
+xlabel(xlab);
+ylabel(ylab);
+
+set(gca,...
+    'FontSize',14,...
+    'FontName','Arial',...
+    'LineWidth',1.2,...
+    'Box','off');
+
+exportgraphics(gcf,...
+    outfile,...
+    'ContentType','vector');
+
+end
