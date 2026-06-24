@@ -1,0 +1,200 @@
+%% For H1 & H2
+% This section extracts variables from table T and removes outliers 
+% using the standard 3 scaled MAD method across the entire dataset.
+
+% Extract columns from your table T
+E0_2 = T.E0_2;
+E2_0 = T.E2_0;
+PSMT = T.PSMT;
+
+% Identify rows that contain outliers (1 = outlier, 0 = normal data)
+outliers_H1 = isoutlier(E0_2, 'median', 'ThresholdFactor', 3) | isoutlier(PSMT, 'median', 'ThresholdFactor', 3);
+outliers_H2 = isoutlier(E2_0, 'median', 'ThresholdFactor', 3) | isoutlier(PSMT, 'median', 'ThresholdFactor', 3);
+
+% Create clean data arrays by removing the outlier rows
+E0_2_clean = E0_2(~outliers_H1);
+PSMT_clean_H1 = PSMT(~outliers_H1);
+
+E2_0_clean = E2_0(~outliers_H2);
+PSMT_clean_H2 = PSMT(~outliers_H2);
+
+% Print the number of outliers removed to the command window
+fprintf('Hypothesis 1: Removed %d outliers.\n', sum(outliers_H1));
+fprintf('Hypothesis 2: Removed %d outliers.\n', sum(outliers_H2));
+
+% 2. RUN NEW CORRELATIONS WITH CLEAN DATA
+% This section runs the new Pearson correlations without the table outliers.
+
+disp('--- New Results for Hypothesis 1 (Clean Data) ---');
+[R_H1, P_H1] = corrcoef(E0_2_clean, PSMT_clean_H1);
+fprintf('New r = %.3f, New p = %.3f\n\n', R_H1(1,2), P_H1(1,2));
+
+disp('--- New Results for Hypothesis 2 (Clean Data) ---');
+[R_H2, P_H2] = corrcoef(E2_0_clean, PSMT_clean_H2);
+fprintf('New r = %.3f, New p = %.3f\n\n', R_H2(1,2), P_H2(1,2));
+
+%3. GET THE PSMT RESULTS OF THE OUTLIERS
+
+% Display outliers for Hypothesis 1
+disp('--- Outlier PSMT Scores for Hypothesis 1 ---');
+% This filters table T to only show rows where outliers_H1 is true (1)
+T_outliers_H1 = T(outliers_H1, :); 
+disp(T_outliers_H1(:, {'PSMT'})) % Change 'PSMT' to include ID if you have a column like {'Subject_ID', 'PSMT'}
+
+disp('--- Outlier PSMT Scores for Hypothesis 2 ---');
+% This filters table T to only show rows where outliers_H2 is true (1)
+T_outliers_H2 = T(outliers_H2, :);
+disp(T_outliers_H2(:, {'PSMT'}))
+
+%% For H3, H5, H6 & H7
+% 1. ASSIGN VARIABLES FROM THE TABLE
+S2 = T.S2;
+dE = T.dE;
+dS = T.dS;
+PSMT = T.PSMT;
+
+% Identify rows that contain outliers (1 = outlier, 0 = normal data)
+outliers_H3 = isoutlier(S2, 'median', 'ThresholdFactor', 3) | isoutlier(PSMT, 'median', 'ThresholdFactor', 3);
+outliers_H5 = isoutlier(dE, 'median', 'ThresholdFactor', 3) | isoutlier(PSMT, 'median', 'ThresholdFactor', 3);
+outliers_H6 = isoutlier(dS, 'median', 'ThresholdFactor', 3) | isoutlier(PSMT, 'median', 'ThresholdFactor', 3);
+outliers_H7 = isoutlier(dS, 'median', 'ThresholdFactor', 3) | isoutlier(dE, 'median', 'ThresholdFactor', 3);
+
+% Create clean data arrays by removing the outlier rows
+S2_clean = S2(~outliers_H3);
+PSMT_clean_H3 = PSMT(~outliers_H3);
+
+dE_clean = dE(~outliers_H5);
+PSMT_clean_H5 = PSMT(~outliers_H5);
+
+dS_clean = dS(~outliers_H6);
+PSMT_clean_H6 = PSMT(~outliers_H6);
+
+dS_clean_H7 = dS(~outliers_H7);
+dE_clean_H7 = dE(~outliers_H7);
+
+% Print the number of outliers removed to the command window
+fprintf('Hypothesis 3: Removed %d outliers.\n', sum(outliers_H3));
+fprintf('Hypothesis 5: Removed %d outliers.\n', sum(outliers_H5));
+fprintf('Hypothesis 6: Removed %d outliers.\n', sum(outliers_H6));
+fprintf('Hypothesis 7: Removed %d outliers.\n\n', sum(outliers_H7));
+
+
+% 2. RUN NEW CORRELATIONS WITH CLEAN DATA
+% This section runs the new Pearson correlations using corrcoef.
+
+disp('--- New Results for Hypothesis 3 (Clean Data) ---');
+[R_H3, P_H3] = corrcoef(S2_clean, PSMT_clean_H3, 'Rows','complete');
+fprintf('New r = %.3f, New p = %.3f\n\n', R_H3(1,2), P_H3(1,2));
+
+disp('--- New Results for Hypothesis 5 (Clean Data) ---');
+[R_H5, P_H5] = corrcoef(dE_clean, PSMT_clean_H5, 'Rows','complete');
+fprintf('New r = %.3f, New p = %.3f\n\n', R_H5(1,2), P_H5(1,2));
+
+disp('--- New Results for Hypothesis 6 (Clean Data) ---');
+[R_H6, P_H6] = corrcoef(dS_clean, PSMT_clean_H6, 'Rows','complete');
+fprintf('New r = %.3f, New p = %.3f\n\n', R_H6(1,2), P_H6(1,2));
+
+disp('--- New Results for Hypothesis 7 (Clean Data) ---');
+[R_H7, P_H7] = corrcoef(dS_clean_H7, dE_clean_H7, 'Rows','complete');
+fprintf('New r = %.3f, New p = %.3f\n\n', R_H7(1,2), P_H7(1,2));
+
+
+% 3. GET THE PSMT RESULTS OF THE OUTLIERS
+
+disp('--- Outlier PSMT Scores for Hypothesis 3 ---');
+T_outliers_H3 = T(outliers_H3, :); 
+disp(T_outliers_H3(:, {'PSMT'}))
+
+disp('--- Outlier PSMT Scores for Hypothesis 5 ---');
+T_outliers_H5 = T(outliers_H5, :); 
+disp(T_outliers_H5(:, {'PSMT'}))
+
+disp('--- Outlier PSMT Scores for Hypothesis 6 ---');
+T_outliers_H6 = T(outliers_H6, :); 
+disp(T_outliers_H6(:, {'PSMT'}))
+
+disp('--- Outlier PSMT Scores for Hypothesis 7 ---');
+T_outliers_H7 = T(outliers_H7, :); 
+disp(T_outliers_H7(:, {'PSMT'}))
+
+%% H4: Regression
+mdl = fitlm(T, 'PSMT ~ S0 + S2');
+disp(mdl)
+
+% Cook's distance
+cooksD = mdl.Diagnostics.CooksDistance;
+
+% Leverage (hat values)
+leverage = mdl.Diagnostics.Leverage;
+
+% Studentized residuals
+studRes = mdl.Residuals.Studentized;
+
+% Identify "problematic" observations
+%Cook's distance rule
+n = mdl.NumObservations;
+cooks_threshold = 4/n;
+
+influential_cooks = find(cooksD > cooks_threshold);
+%leverage rule:
+k = 2;
+leverage_threshold = 2*(k+1)/n;
+
+high_leverage = find(leverage > leverage_threshold);
+%Studentized residuals
+outliers_resid = find(abs(studRes) > 3);
+influential = unique([influential_cooks; high_leverage; outliers_resid]);
+length(influential)
+table(influential,...
+      cooksD(influential),...
+      leverage(influential),...
+      studRes(influential))
+
+%Double check the influential cases
+n = mdl.NumObservations;
+k = 2;
+
+cooks_threshold = 4/n;
+leverage_threshold = 2*(k+1)/n;
+
+flag_cooks = cooksD > cooks_threshold;
+flag_lev   = leverage > leverage_threshold;
+flag_resid = abs(studRes) > 3;
+
+table(find(flag_cooks | flag_lev | flag_resid), ...
+      flag_cooks(flag_cooks | flag_lev | flag_resid), ...
+      flag_lev(flag_cooks | flag_lev | flag_resid), ...
+      flag_resid(flag_cooks | flag_lev | flag_resid))
+%See what the numbers for VAr1,VAr2, VAr3 are for each participant
+both = find(flag_cooks & flag_lev);
+
+table(both, cooksD(both), leverage(both), studRes(both))
+
+% See the results of the two cases in the main table
+mdl.Variables([73 427],:)
+
+%clean the data
+ X = [T_nct.S0 T_nct.S2];
+keep = true(n,1);
+keep([73 427]) = false;
+
+%Do regression with the clean data to be able to compare them
+mdl_clean = fitlm(X(keep,:), T_nct.PSMT(keep));
+mdl_clean = fitlm(X(setdiff(1:n,[73], [427]),:), T_nct.PSMT(setdiff(1:n,[73], [427])));
+
+mdl_clean.Coefficients
+
+%% Calculating beta
+b = mdl_clean.Coefficients.Estimate;   % includes intercept
+
+% remove intercept (VERY important)
+b = b(2:end);
+
+% standard deviations
+sx = std(X_clean, 0, 1);   % per predictor (S0, S2)
+sy = std(y_clean);
+
+% standardized beta
+beta = b .* (sx' ./ sy);
+beta;
+terms = mdl_clean.Coefficients.Properties.RowNames;
