@@ -1,19 +1,19 @@
 %% setup
-setenv('WB_COMMAND', 'C:\Program Files\workbench\bin_windows64\wb_command.exe');
+setenv('WB_COMMAND', 'path/to/where wb_command is'');
 
 %% prep
-id_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Task Data\WM brain states\Vorbereitung_extraction\HCP_1200_ids.txt";
-atlas_base = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Task Data\WM brain states\results";
-cope_base = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Task Data\WM brain states\States_Extracted";
-output_base = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\States prepared";
+id_file = 'path/to/id file';
+atlas_base = 'path/to/atlas file';
+cope_base = 'path/to/states files';
+output_base = 'path/to/where to store the prepared files';
 
 sub_string = fileread(id_file);
-HCP1200ids = cellstr(split(strtrim(sub_string)));
+HCPids = cellstr(split(strtrim(sub_string)));
 
 %% extract mean value per ROI on Lausanne250
 
-for subj=1:length(HCP1200ids)
-    subj_id = strtrim(HCP1200ids{subj});
+for subj=1:length(HCPids)
+    subj_id = strtrim(HCPids{subj});
 
     fprintf('Processing subject %s\n', subj_id);
 
