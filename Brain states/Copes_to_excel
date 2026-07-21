@@ -1,8 +1,8 @@
 %% AFTER both cope9 and cope10 are reordered, the xlsx files with the 
 % cope 9 and cope 10 for each subject are created
 %% Defining where the files can be found
-output_base = 'path/to/where to store the prepared files'; 
-id_file = 'path/to/id file'; 
+output_base = 'path/to/where/to/store/the/prepared/files'; 
+id_file = 'path/to/id/file'; 
 
 subj_list = strsplit(strtrim(fileread(id_file))); 
 subj_list = strtrim(subj_list); 
