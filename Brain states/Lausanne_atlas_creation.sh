@@ -1,12 +1,12 @@
 #!/bin/bash
 #export OMP_NUM_THREADS=1
 
-subs=$(</home/brankovk/Masterarbeit/HCP_1200_ids.txt)
+subs=$('path/to/where the id file is')
 
-HCP=/slow/projects/HCP_1200/01_complete_batch
-OUT=/home/brankovk/Masterarbeit/results
-T1=/home/brankovk/Masterarbeit/HCP_1200
-LUT=/home/brankovk/Masterarbeit/Laus250AllLut.txt
+HCP='path/to/where the data to be used is'
+OUT='path/to/where the files to be stored'
+T1='path/to/where T1 is stored'
+LUT='path/to/where the Lausanne parcellation file is'
 
 # Handle Ctrl+C (SIGINT)
 trap 'echo "Stopping..."; kill 0; exit 1' SIGINT
