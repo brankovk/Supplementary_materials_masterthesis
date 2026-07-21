@@ -4,8 +4,8 @@
 % we need to extract these two columns from the main excel-table from
 % the HCP site
 %% Add the table with the data in MATLAB and open HCP_data
-id_file = "path/to/where the id file is stored";
-behavioral_data_file = "path/to/where the behavioral xlsx file is stored";
+id_file = "path/to/the/id/file";
+behavioral_data_file = "path/to/the/behavioral/xlsx/file";
 
 assert(isfile(behavioral_data_file), "Excel file not found");
 assert(isfile(id_file), "ID file not found");
@@ -42,7 +42,7 @@ FinalTable.Age = T_filtered.Age;
 %% Display and save
 disp(FinalTable)
 
-writetable(FinalTable, "path/to/where to save the file with the extracted age of each participant");
+writetable(FinalTable, "path/to/where/to/save/the/file/with/the/extracted/age/of/each/participant");
 
 %% Keep only what is needed
 FinalTable = table;
@@ -52,4 +52,4 @@ FinalTable.Gender = T_filtered.Gender;
 %% Display and save
 disp(FinalTable)
 
-writetable(FinalTable, "path/to/where to save the file with the extracted gender of each participant");
+writetable(FinalTable, "path/to/where/to/save/the/file/with/the/extracted/gender/of/each/participant");
