@@ -2,7 +2,7 @@
 % This section extracts variables from table T and removes outliers 
 % using the standard 3 scaled MAD method across the entire dataset.
 
-% Extract columns from your table T
+% Extract columns from the table where the results from NCT are
 E0_2 = T.E0_2;
 E2_0 = T.E2_0;
 PSMT = T.PSMT;
@@ -141,7 +141,8 @@ k = 2;
 leverage_threshold = 2*(k+1)/n;
 
 high_leverage = find(leverage > leverage_threshold);
-%Studentized residuals
+
+Studentized residuals
 outliers_resid = find(abs(studRes) > 3);
 influential = unique([influential_cooks; high_leverage; outliers_resid]);
 length(influential)
