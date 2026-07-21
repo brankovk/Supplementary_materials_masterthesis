@@ -5,14 +5,14 @@
 % organized to have all the needed information in one document. Then we cn
 % use only this table in the script for the correlation and the regression.
 %% First we need to load the subject IDs
-id_file = "path/to/where the id file is";
+id_file = "path/to/the/id/file";
 
 subjects = string(readlines(id_file));
 subjects = strtrim(subjects);
 subjects(subjects == "") = [];
 
 %% Then we need to load the energy files ( the results from the NCT-analysis)
-energy_dir = "path/to/where the NCT results are stored";
+energy_dir = "path/to/the/NCT/results";
 
 %% After that we need to load the results of the age-adjusted Picture Sequence Memory Test (PSMT)
 % (the table we created with only two columns -> one with subjects ID and
@@ -84,6 +84,6 @@ T_nct = table(Subject, E0_2, E2_0, S0, S2, dE, dS, PSMT);
 %% Save dataset
 save("path/to/where to save the created table with NCT & PSMT results");
 
-writetable("path/to/where to save a csv version of the table with NCT & PSMT results");
+writetable("path/to/where/to/save/a/csv/version/of/the/table/with/NCT/&/PSMT/results");
 
 disp('DONE: dataset created');
