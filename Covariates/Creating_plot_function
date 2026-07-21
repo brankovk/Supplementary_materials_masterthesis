@@ -1,6 +1,6 @@
 function plot_partialcorr(X,Y,covars,xlab,ylab,outfile)
-
-% Remove missing values exactly as partialcorr does
+%% this function will be used to plot every hypothesis
+%% Remove missing values exactly as partialcorr does
 idx = all(~isnan([X Y covars]),2);
 
 X = X(idx);
