@@ -2,10 +2,10 @@
 setenv('WB_COMMAND', 'path/to/where wb_command is'');
 
 %% prep
-id_file = 'path/to/id file';
-atlas_base = 'path/to/atlas file';
-cope_base = 'path/to/states files';
-output_base = 'path/to/where to store the prepared files';
+id_file = 'path/to/id/file';
+atlas_base = 'path/to/atlas/file';
+cope_base = 'path/to/states/files';
+output_base = 'path/to/where/to/store/the/prepared/files';
 
 sub_string = fileread(id_file);
 HCPids = cellstr(split(strtrim(sub_string)));
