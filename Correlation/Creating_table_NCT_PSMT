@@ -5,19 +5,19 @@
 % organized to have all the needed information in one document. Then we cn
 % use only this table in the script for the correlation and the regression.
 %% First we need to load the subject IDs
-id_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Task Data\WM brain states\Vorbereitung_extraction\HCP_1200_ids.txt";
+id_file = "path/to/where the id file is";
 
 subjects = string(readlines(id_file));
 subjects = strtrim(subjects);
 subjects(subjects == "") = [];
 
 %% Then we need to load the energy files ( the results from the NCT-analysis)
-energy_dir = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Python\Global energies\T1\Rho1";
+energy_dir = "path/to/where the NCT results are stored";
 
 %% After that we need to load the results of the age-adjusted Picture Sequence Memory Test (PSMT)
 % (the table we created with only two columns -> one with subjects ID and
 % second column with each subject's score on the PSMT)
-psmt_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\Correlation\HCP_PicSeq_all_filtered.csv";
+psmt_file = "path/to/where PSMT results are stored";
 psmt_table = readtable(psmt_file);
 psmt_table.Subject = string(psmt_table.Subject);
 psmt_table.Subject = strtrim(psmt_table.Subject);
@@ -82,8 +82,8 @@ end
 T_nct = table(Subject, E0_2, E2_0, S0, S2, dE, dS, PSMT);
 
 %% Save dataset
-save("C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\Correlation\NCT_PSMT_all_dataset.mat", 'T_nct');
+save("path/to/where to save the created table with NCT & PSMT results");
 
-writetable(T_nct, "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\Correlation\NCT_PSMT_all_dataset.csv");
+writetable("path/to/where to save a csv version of the table with NCT & PSMT results");
 
 disp('DONE: dataset created');
