@@ -12,12 +12,12 @@ from nctpy.pipelines import ComputeControlEnergy
 
 
 # load needed data
-id_file = r"C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Task Data\WM brain states\Vorbereitung_extraction\HCP_1200_ids.txt"
+id_file = r"path/to/the/id/file"
 
 # directory where data is stored
-results_dir = r"C:\Users\brank\Desktop\Masterarbeit_offiziell\Python\Global energies"
-adjacency_dir = r"C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\Connectomes prepared"
-states_dir = r"C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\States prepared"
+results_dir = r"path/to/where/to/store/the/results"
+adjacency_dir = r"path/to/adjacency/matrices"
+states_dir = r"path/to/the/brain/states"
 
 # load subject list
 with open(id_file) as f:
