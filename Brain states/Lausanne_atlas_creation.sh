@@ -1,12 +1,12 @@
 #!/bin/bash
 #export OMP_NUM_THREADS=1
 
-subs=$('path/to/where the id file is')
+subs=$('path/to/the/id/file')
 
-HCP='path/to/where the data to be used is'
-OUT='path/to/where the files to be stored'
-T1='path/to/where T1 is stored'
-LUT='path/to/where the Lausanne parcellation file is'
+HCP='path/to/the/data/to/be/used'
+OUT='path/to/where/the/files/to/be/stored'
+T1='path/to/T1'
+LUT='path/to/the/Lausanne/parcellation/file'
 
 # Handle Ctrl+C (SIGINT)
 trap 'echo "Stopping..."; kill 0; exit 1' SIGINT
