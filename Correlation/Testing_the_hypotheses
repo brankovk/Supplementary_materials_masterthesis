@@ -43,4 +43,4 @@ results.p = [p1; p2; p3; p4; p5; p6];
 
 disp(results)
 
-writetable(results, "path/to/where to save the table with the results from the hypotheses testing", 'WriteRowNames',false);
+writetable(results, "path/to/where/to/save/the/table/with/the/results/from/the/hypotheses/testing", 'WriteRowNames',false);
