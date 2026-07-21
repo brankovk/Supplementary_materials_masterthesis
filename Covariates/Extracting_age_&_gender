@@ -4,8 +4,8 @@
 % we need to extract these two columns from the main excel-table from
 % the HCP site
 %% Add the table with the data in MATLAB and open HCP_data
-id_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Task Data\WM brain states\Vorbereitung_extraction\HCP_1200_ids.txt";
-behavioral_data_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Data\Sample\HCP_S1200_Endsample.xlsx";
+id_file = "path/to/where the id file is stored";
+behavioral_data_file = "path/to/where the behavioral xlsx file is stored";
 
 assert(isfile(behavioral_data_file), "Excel file not found");
 assert(isfile(id_file), "ID file not found");
@@ -42,7 +42,7 @@ FinalTable.Age = T_filtered.Age;
 %% Display and save
 disp(FinalTable)
 
-writetable(FinalTable, "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\HCP_Age_all_filtered.csv");
+writetable(FinalTable, "path/to/where to save the file with the extracted age of each participant");
 
 %% Keep only what is needed
 FinalTable = table;
@@ -52,4 +52,4 @@ FinalTable.Gender = T_filtered.Gender;
 %% Display and save
 disp(FinalTable)
 
-writetable(FinalTable, "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\Correlation\HCP_Gender_all_filtered.csv");
+writetable(FinalTable, "path/to/where to save the file with the extracted gender of each participant");
