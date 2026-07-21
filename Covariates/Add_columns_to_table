@@ -9,7 +9,7 @@
 % extract midpoint of the age gab, because the are written like 25-30,
 % 30-35, etc.
 %% Load gender file
-gender_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\HCP_Gender_all_filtered.csv";
+gender_file = "path/to/where the file with the extracted gender of each participant is stored";
 
 gender_table = readtable(gender_file);
 
@@ -38,7 +38,7 @@ T_nct.Gender_num(strcmp(T_nct.Gender, "F")) = 1;
 T_nct.Gender = [];
 
 %% Load Age file
-age_file = "C:\Users\brank\Desktop\Masterarbeit_offiziell\Matlab\HCP_Age_all_filtered.csv";
+age_file = "path/to/where the file with the extracted age of each participant is stored";
 
 age_table = readtable(age_file);
 
